@@ -24,7 +24,41 @@ class Laberinto:
     def mostrar(self):
         #Dibuja el tablero en la consola
         for fila in self.tablero:
-            print("-" * (self.columnas * 2))  #Una linea separadora
+            print(' '.join(fila))
+        print("-" * 15)  # Linea separadora
 
-mi_juego = Laberinto(5,5)
-mi_juego.mostrar()
+    def realizar_movimiento(self, personaje, direccion):
+        # 1. ¿Quién se mueve?
+        if personaje == 'R':
+            pos_actual = self.raton_pos
+        else:
+            pos_actual = self.gato_pos
+    
+        # 
+        fila_actual = pos_actual[0]
+        columna_actual = pos_actual[1]
+        nueva_fila = fila_actual
+        nueva_columna = columna_actual
+
+        # Posicion
+        if direccion == 'arriba':
+            nueva_fila -= 1
+        elif direccion == 'abajo':
+            nueva_fila += 1
+        elif direccion == 'izquierda':
+            nueva_columna -= 1
+        elif direccion == 'derecha':
+            nueva_columna += 1
+
+        # 4. Verifico limiyes
+        if (0 <= nueva_fila < self.filas) and (0 <= nueva_columna < self.columnas):
+            if personaje == 'R':
+                self.raton_pos = [nueva_fila, nueva_columna]
+            else:
+                self.gato_pos = [nueva_fila, nueva_columna]
+            
+            self.actualizar_posiciones()
+            return True 
+        else:
+            print(f"¡{personaje} intentó chocar contra una pared!")
+            return False
