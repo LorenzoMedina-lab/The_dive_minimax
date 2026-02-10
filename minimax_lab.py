@@ -62,3 +62,8 @@ class Laberinto:
         else:
             print(f"¡{personaje} intentó chocar contra una pared!")
             return False
+#Agrego la Funcion de Evaluacion. medir que tan cerca esta el gato del raton
+    def evaluar(self):
+        distancia_fila = abs(self.gato_pos[0] - self.raton_pos[0])
+        distancia_columna = abs(self.gato_pos[1] - self.raton_pos[1])
+        return distancia_fila +  distancia_columna
