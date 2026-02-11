@@ -1,5 +1,6 @@
 #Creo el laberinto
 import random
+import copy
 
 class Laberinto:
     def __init__(self, filas, columnas):
@@ -27,7 +28,7 @@ class Laberinto:
             print(' '.join(fila))
         print("-" * 15)  # Linea separadora
 
-    def realizar_movimiento(self, personaje, direccion):
+    def realizar_movimiento(self, personaje, direccion, notificar=False):
         # 1. ¿Quién se mueve?
         if personaje == 'R':
             pos_actual = self.raton_pos
@@ -59,11 +60,36 @@ class Laberinto:
             
             self.actualizar_posiciones()
             return True 
-        else:
-            print(f"¡{personaje} intentó chocar contra una pared!")
-            return False
+        #Solo notificar si es True
+        if notificar:
+            print(f"{personaje} intento chocar contra una pared.!")
+        return False
 #Agrego la Funcion de Evaluacion. medir que tan cerca esta el gato del raton
     def evaluar(self):
         distancia_fila = abs(self.gato_pos[0] - self.raton_pos[0])
         distancia_columna = abs(self.gato_pos[1] - self.raton_pos[1])
         return distancia_fila +  distancia_columna
+
+    #Agrego la funcion de minimax
+    def minimax(self, profundidad, es_maximzando):
+
+        if profundidad == 0 or self.gato_pos == self.raton_pos:
+            return self.evaluar()
+        if es_maximzando: 
+            mejor_valor = -float('inf')
+            for direccion in ['arriba', 'abajo', 'izquierda', 'derecha']:
+                copia_simulada = copy.deepcopy(self)
+                if copia_simulada.realizar_movimiento('R',direccion):
+                     valor = copia_simulada.minimax(profundidad - 1, False)
+                     mejor_valor = max(mejor_valor, valor)
+            return mejor_valor
+        else: #Turno del gato
+            mejor_valor = float('inf')
+            for direccion in ['arriba','abajo','izquierda','derecha']:
+              copia_simulada = copy.deepcopy(self)
+              if  copia_simulada.realizar_movimiento('G',direccion):
+                valor = copia_simulada.minimax(profundidad - 1, True)
+                mejor_valor = min(mejor_valor, valor)
+            return mejor_valor
+        
+    
